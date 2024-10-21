@@ -1,30 +1,17 @@
 import random
+import re
 
 def count_syllables(word):
-    """Counts the number of syllables in a word.
-    This is a simple heuristic and may not be perfectly accurate.
-    """
-    count = 0
-    vowels = 'aeiouy'
+    """Counts the number of syllables in a word using regex."""
     word = word.lower()
-    # Count first syllable if word starts with a vowel
-    if word[0] in vowels:
-        count += 1
-    # Count syllables in the rest of the word
-    for i in range(1, len(word)):
-        if word[i] in vowels and word[i-1] not in vowels:
-            count += 1
-    """This method counts syllables based on the principle that a syllable 
-    typically contains a vowel sound. It looks for transitions from consonants 
-    to vowels, which often indicate the start of a new syllable.
-    """
-    # Adjust count for words ending in 'e'
-    if word.endswith('e'):
-        count -= 1
+    # Define vowel groups
+    vowels = "aeiouy"
+    # Remove silent 'e' at the end
+    word = re.sub(r'e$', '', word)
+    # Count vowel groups as syllables
+    syllable_count = len(re.findall(r'[aeiouy]+', word))
     # Ensure at least one syllable is counted
-    if count == 0:
-        count += 1
-    return count
+    return max(1, syllable_count)
     
 def generate_haiku_line(word_bank, target_syllables):
     """Generates a single line of a haiku with a target number of syllables."""
