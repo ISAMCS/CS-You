@@ -23,13 +23,12 @@ new_word1 = input("Insert New Word 1: ")
 new_word2 = input("Insert New Word 2: ")
 new_word3 = input("Insert New Word 3: ")
 
+new_words = [new_word1, new_word2, new_word3]
+
 # Check if the input is not empty before appending to word_bank.
-if new_word1:
-    word_bank.append(new_word1)
-if new_word2:
-    word_bank.append(new_word2)
-if new_word3:
-  word_bank.append(new_word3)
+for new_word in new_words:
+    if new_word:
+        word_bank.append(new_word)
 
 print("Updated word bank:", word_bank)
 
@@ -44,9 +43,12 @@ print("\nInvalid words:")
 for word in invalid_words:
     print(f"{word}: Invalid for haiku")
 
-def generate_haiku_line(target_syllables):
+def generate_haiku_line(target_syllables, forced_word=None):
     line = []
     syllable_count = 0
+    if forced_word and forced_word in valid_words:
+        line.append(forced_word)
+        syllable_count += valid_words[forced_word]
     while syllable_count < target_syllables:
         word = random.choice(list(valid_words.keys()))
         word_syllables = valid_words[word]
@@ -55,19 +57,23 @@ def generate_haiku_line(target_syllables):
             syllable_count += word_syllables
     return " ".join(line)
 
-
-def generate_haiku(): # Removed word_bank as an argument
+def generate_haiku():
+    # Ensure at least one new word is included
+    forced_word = random.choice([word for word in new_words if word in valid_words])
     haiku = [
-        generate_haiku_line(5),
+        generate_haiku_line(5, forced_word),
         generate_haiku_line(7),
         generate_haiku_line(5)
     ]
     return "\n".join(haiku)
 
-haiku = generate_haiku() # Removed word_bank from the function call
+haiku = generate_haiku()
 
 if haiku:
     print("Generated Haiku:")
+    print(haiku)
+else:
+    print("Failed to generate a haiku.")
     print(haiku)
 else:
     print("Failed to generate a haiku.")
